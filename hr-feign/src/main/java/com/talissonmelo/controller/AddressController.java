@@ -23,7 +23,7 @@ public class AddressController {
 	
 	@PostMapping(value = "/{cep}")
 	public ResponseEntity<AddressResume> findByCepAddress(@PathVariable String cep, @Valid @RequestBody Complement complement) {
-		AddressResume address = service.findByCep(cep, complement);
+		AddressResume address = service.insertAddress(cep, complement);
 		return ResponseEntity.ok().body(address);
 	}
 }

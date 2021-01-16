@@ -1,5 +1,6 @@
 package com.talissonmelo.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,22 +19,14 @@ public class AddressService {
 	@Autowired
 	private AddressRepository repository;
 	
-	public AddressResume findByCep(String cep, Complement complement) {
+	@Autowired
+	private ModelMapper mapper;
+	
+	public AddressResume insertAddress(String cep, Complement complement) {
 		Address address = feignClient.findByCep(cep).getBody();
 		address.setComplemento(complement.getComplemento());
 		address.setNumero(complement.getNumero());
-		return toAddressResume(address);
-	}
-
-	private AddressResume toAddressResume(Address address) {
-		AddressResume resume = new AddressResume();
-		resume.setBairro(address.getBairro());
-		resume.setCep(address.getCep());
-		resume.setComplemento(address.getComplemento());
-		resume.setLocalidade(address.getLocalidade());
-		resume.setLogradouro(address.getLogradouro());
-		resume.setNumero(address.getNumero());
-		resume.setUf(address.getUf());
+		AddressResume resume = mapper.map(address, AddressResume.class);
 		return repository.save(resume);
 	}
 }
